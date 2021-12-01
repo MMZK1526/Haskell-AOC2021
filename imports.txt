@@ -1,0 +1,19 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+import           Control.Monad
+import           Control.Monad.ST
+import           Control.Monad.Trans.Class
+import           Control.Monad.Trans.State
+import qualified Data.Array as A
+import qualified Data.Array.ST as STA
+import           Data.Foldable
+import qualified Data.Map as M
+import qualified Data.Sequence as L
+import qualified Data.Set as S
+import qualified Data.Text as T
+import           Text.Parsec
+import           Text.Parsec.String
+import           Utilities
