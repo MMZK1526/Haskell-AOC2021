@@ -12,7 +12,7 @@ day1Part2 = day1Part1 . threeWindow
 
 threeWindow :: [Integer] -> [Integer]
 threeWindow (x : x' : x'' : xs) = (x + x' + x'') : threeWindow (x' : x'': xs)
-threeWindow xs                  = []
+threeWindow _                   = []
 
 main :: IO ()
 main = do

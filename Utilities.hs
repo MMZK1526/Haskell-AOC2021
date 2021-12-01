@@ -1,11 +1,11 @@
 module Utilities where
 
+import           Data.Either
 import           Data.Text (Text, pack, unpack)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Data.Text.Read as T
 import           Gadgets.IO
-import           Data.Either
 
 readInput :: String -> IO Text
 readInput path = do
