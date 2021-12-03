@@ -1,18 +1,14 @@
+import           Control.Monad
 import qualified Data.Text as T
 import           Utilities
 
+-- Question source: https://adventofcode.com/2021/day/1
+
 day1Part1 :: [Integer] -> Integer
-day1Part1 = go 0
-  where
-    go n (x : x' : xs) = go (if x < x' then n + 1 else n) $ x' : xs
-    go n _             = n
+day1Part1 = sum . fmap (fromIntegral . fromEnum) . ap (zipWith (<)) tail
 
 day1Part2 :: [Integer] -> Integer
-day1Part2 = day1Part1 . threeWindow
-
-threeWindow :: [Integer] -> [Integer]
-threeWindow (x : x' : x'' : xs) = (x + x' + x'') : threeWindow (x' : x'': xs)
-threeWindow _                   = []
+day1Part2 = sum . fmap (fromIntegral . fromEnum) . ap (zipWith (<)) (drop 3)
 
 main :: IO ()
 main = do

@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
-import           Control.Monad.Trans.State
+-- Question source: https://adventofcode.com/2021/day/2
+
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Utilities
@@ -14,12 +15,11 @@ day2Part1 = uncurry (*) . foldr go (0, 0)
     go ("up",      c) (x, y) = (x, y - c)
 
 day2Part2 :: [(Text, Integer)] -> Integer
-day2Part2 = uncurry (*) . fst . flip execState ((0, 0), 0) . mapM_ go
+day2Part2 = uncurry (*) . fst . foldr go ((0, 0), 0)
   where
-    go (op, c) = modify $ \((x, y), a) -> case op of
-      "down"    -> ((x, y), a + c)
-      "up"      -> ((x, y), a - c)
-      "forward" -> ((x + c, y + a * c), a)
+    go ("down",    c) ((x, y), a) = ((x, y)            , a + c)
+    go ("up",      c) ((x, y), a) = ((x, y)            , a - c)
+    go ("forward", c) ((x, y), a) = ((x + c, y + a * c), a)
 
 main :: IO ()
 main = do
