@@ -4,7 +4,6 @@
 
 import           Control.Monad
 import           Data.Array (Array)
-import qualified Data.Array as A
 import qualified Data.Foldable as F
 import           Data.Maybe
 import           Data.Sequence (Seq)
@@ -22,9 +21,9 @@ updateBoard i board = work 0
   where
     work 25 = board
     work n
-      | v == (i, True)   = board
-      | v == (i, False)  = L.update n (i, True) board
-      | otherwise        = work $ n + 1
+      | v == (i, True)  = board
+      | v == (i, False) = L.update n (i, True) board
+      | otherwise       = work $ n + 1
       where
         v = board `L.index` n
 
@@ -38,17 +37,16 @@ checkBoard board
     checkCol i = and $ snd . (board `L.index`) . (i +) . (5 *) <$> [0..4]
 
 day4Part1 :: [Integer] -> [Board] -> Integer
-day4Part1 (n : ns) boards = case msum winConfig of
+day4Part1 (n : ns) boards = case msum (checkBoard <$> boards') of
   Nothing -> day4Part1 ns boards'
   Just b  -> n * sum (map fst $ filter (not . snd) $ F.toList b)
   where
-    winConfig = checkBoard <$> boards'
-    boards'   = updateBoard n <$> boards
+    boards' = updateBoard n <$> boards
 
 day4Part2 :: [Integer] -> [Board] -> Integer
 day4Part2 (n : ns) boards = case loseBoards of
-  []  -> n * sum (map fst $ filter (not . snd) $ F.toList $ head boards')
-  _   -> day4Part2 ns loseBoards
+  [] -> n * sum (map fst $ filter (not . snd) $ F.toList $ head boards')
+  _  -> day4Part2 ns loseBoards
   where
     loseBoards = filter (isNothing . checkBoard) boards'
     boards'    = updateBoard n <$> boards
