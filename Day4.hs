@@ -4,52 +4,48 @@
 
 import           Control.Monad
 import           Data.Array (Array)
+import qualified Data.Array as A
 import qualified Data.Foldable as F
+import           Data.Map (Map)
+import qualified Data.Map as M
 import           Data.Maybe
-import           Data.Sequence (Seq)
-import qualified Data.Sequence as L
 import qualified Data.Text as T
+import qualified Gadgets.Array as A
 import           Utilities
 
-type Board = Seq (Integer, Bool)
+-- | "Array" for the board and "Map" indicating whether a number is crossed.
+type Board = (Array Int Integer, Map Integer Bool)
 
 initBoard :: [[Integer]] -> Board
-initBoard = L.fromList . fmap (, False) . concat
+initBoard xs = let cxs = concat xs
+               in (A.fromList cxs, M.fromList $ zip cxs $ repeat False)
 
 updateBoard :: Integer -> Board -> Board
-updateBoard i board = work 0
-  where
-    work 25 = board
-    work n
-      | v == (i, True)  = board
-      | v == (i, False) = L.update n (i, True) board
-      | otherwise       = work $ n + 1
-      where
-        v = board `L.index` n
+updateBoard i (vs, bs) = (vs, M.insert i True bs)
 
 -- | Returns Nothing if the "Board" does not win, otherwise "Just" itself.
 checkBoard :: Board -> Maybe Board
-checkBoard board
-  | or [checkRow i || checkCol i| i <- [0..4]] = Just board
-  | otherwise                                  = Nothing
+checkBoard board@(vs, bs)
+  | or [checkRow i || checkCol i | i <- [0..4]] = Just board
+  | otherwise                                   = Nothing
   where
-    checkRow i = and $ snd . (board `L.index`) . (5 * i +) <$> [0..4]
-    checkCol i = and $ snd . (board `L.index`) . (i +) . (5 *) <$> [0..4]
+    checkRow i = and $ (bs M.!) . (vs A.!) . (5 * i +) <$> [0..4]
+    checkCol i = and $ (bs M.!) . (vs A.!) . (i +) . (5 *) <$> [0..4]
 
 day4Part1 :: [Integer] -> [Board] -> Integer
 day4Part1 (n : ns) boards = case msum (checkBoard <$> boards') of
-  Nothing -> day4Part1 ns boards'
-  Just b  -> n * sum (map fst $ filter (not . snd) $ F.toList b)
+  Nothing       -> day4Part1 ns boards'
+  Just (vs, bs) -> n * sum (filter (not . (bs M.!)) $ F.toList vs)
   where
     boards' = updateBoard n <$> boards
 
 day4Part2 :: [Integer] -> [Board] -> Integer
 day4Part2 (n : ns) boards = case loseBoards of
-  [] -> n * sum (map fst $ filter (not . snd) $ F.toList $ head boards')
+  [] -> n * sum (filter (not . (bs M.!)) $ F.toList vs)
   _  -> day4Part2 ns loseBoards
   where
-    loseBoards = filter (isNothing . checkBoard) boards'
-    boards'    = updateBoard n <$> boards
+    loseBoards             = filter (isNothing . checkBoard) boards'
+    boards'@((vs, bs) : _) = updateBoard n <$> boards
 
 main :: IO ()
 main = do
