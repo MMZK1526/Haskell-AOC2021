@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
+-- Question source: https://adventofcode.com/2021/day/5
+
 import           Data.Bifunctor
 import qualified Data.Foldable as F
 import           Data.List

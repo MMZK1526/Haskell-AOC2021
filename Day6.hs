@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Question source: https://adventofcode.com/2021/day/6
+
 import           Control.Monad
 import           Control.Monad.Trans.State
 import qualified Data.Map as M

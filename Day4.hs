@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
+-- Question source: https://adventofcode.com/2021/day/4
+
 import           Control.Monad
 import           Data.Array (Array)
 import qualified Data.Array as A
