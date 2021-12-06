@@ -11,10 +11,6 @@ import           Utilities
 
 type Point = ((Integer, Integer), (Integer, Integer))
 
--- | Uses "Map" as a Python Counter.
-countUp :: Ord k => Enum a => k -> Map k a -> Map k a
-countUp = flip (M.insertWith (const succ)) $ toEnum 1
-
 -- Common logic for both parts. "False" for Part 1 and "True" for Part 2.
 mapLines :: Bool -> [Point] -> Int
 mapLines b = length . filter (> 1) . F.toList . foldr addLine M.empty
@@ -29,6 +25,7 @@ mapLines b = length . filter (> 1) . F.toList . foldr addLine M.empty
         xMin : xMax : _  = sort [x, x']
         yMin : yMax : _  = sort [y, y']
         (xD, yD, xs, ys) = (x' - x, y' - y, [xMin..xMax], [yMin..yMax])
+        countUp          = flip (M.insertWith (const succ)) 1
 
 day5Part1 :: [Point] -> Int
 day5Part1 = mapLines False
