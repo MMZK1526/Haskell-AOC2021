@@ -17,14 +17,14 @@ simulate d fs = sum $ flip execState (foldr (`addN` 1) M.empty fs) $
     pass1Day (c, n) counts = addN (c - 1) n counts
     addN k n               = M.insertWith (const (+ n)) k n
 
-day5Part1 :: [Integer] -> Integer
-day5Part1 = simulate 80
+day6Part1 :: [Integer] -> Integer
+day6Part1 = simulate 80
 
-day5Part2 :: [Integer] -> Integer
-day5Part2 = simulate 256
+day6Part2 :: [Integer] -> Integer
+day6Part2 = simulate 256
 
 main :: IO ()
 main = do
   input <- fmap readInt . T.splitOn "," <$> readInput "day6"
-  print $ day5Part1 input
-  print $ day5Part2 input
+  print $ day6Part1 input
+  print $ day6Part2 input
