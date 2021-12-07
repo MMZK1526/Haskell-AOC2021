@@ -7,14 +7,12 @@ import           Utilities
 -- Question source: https://adventofcode.com/2021/day/7
 
 day7Part1 :: [Integer] -> Integer
-day7Part1 xs = minimum [sum $ abs . (x -) <$> ss | x <- (ss !!) <$> [i - 1, i]]
-  where
-    (ss, i) = (sort xs, length xs `div` 2)
+day7Part1 xs = sum $ abs . (sort xs !! (length xs `div` 2) -) <$> xs
 
 day7Part2 :: [Integer] -> Integer
-day7Part2 xs = minimum [sum $ step x <$> xs | x <- [avg - 1, avg]]
+day7Part2 xs = minimum [sum $ step x <$> xs | x <- [avg - 1, avg]] `div` 2
   where
-    step x y = let diff = abs (x - y) in diff * (diff + 1) `div` 2
+    step x y = let diff = abs (x - y) in diff * (diff + 1)
     avg      = round $ realToFrac (sum xs) / genericLength xs
 
 main :: IO ()
