@@ -31,10 +31,10 @@ infixr 4 !
 infixr 4 !?
 (!?) :: (Ix i, MArray a e m) => a i e -> i -> m (Maybe e)
 arrST !? i = do
-  (inf, sup) <- A.getBounds arrST
-  if i < inf || i > sup
-    then return Nothing
-    else Just <$> A.readArray arrST i
+  bs <- A.getBounds arrST
+  if A.inRange bs i
+    then Just <$> A.readArray arrST i
+    else return Nothing
 
 -- | Updates a value in the array.
 -- Example: @ arrST =: 3 $ 5 @ sets the third element to five.

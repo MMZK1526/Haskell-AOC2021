@@ -1,7 +1,7 @@
 module Gadgets.Array where
 
 import           Control.Monad (ap)
-import           Data.Array (Array, Ix, bounds, listArray, (!), (//))
+import           Data.Array (Array, Ix, bounds, inRange, listArray, (!), (//))
 
 -- | Making an array from a list, indexed from 0.
 fromList :: [a] -> Array Int a
@@ -20,7 +20,5 @@ adjust' = (. ap seq) . adjust
 infixr 4 !?
 (!?) :: Ix i => Array i a -> i -> Maybe a
 arr !? i 
-  | i < inf || i > sup = Nothing
-  | otherwise          = Just $ arr ! i
-  where
-     (inf, sup) = bounds arr
+  | inRange (bounds arr) i = Just $ arr ! i
+  | otherwise              = Nothing
