@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 import           Data.Array (Array)
 import qualified Data.Array as A
 import qualified Data.Foldable as F

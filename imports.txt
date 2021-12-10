@@ -12,6 +12,7 @@ import           Data.Array (Array)
 import qualified Data.Array as A
 import qualified Data.Array.ST as STA
 import           Data.Bifunctor
+import           Data.Either
 import qualified Data.Foldable as F
 import           Data.List
 import           Data.Map (Map)
