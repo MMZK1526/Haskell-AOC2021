@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
-
 import           Data.Either
 import qualified Data.Foldable as F
 import           Data.List
