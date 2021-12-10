@@ -46,7 +46,7 @@ day8Part2 input
 
 main :: IO ()
 main = do
-  input <- fmap parseLine . T.lines <$> readInput "day8"
+  input <- map parseLine . T.lines <$> readInput "day8"
   print $ day8Part1 input
   print $ day8Part2 input
   where

@@ -17,6 +17,6 @@ day7Part2 xs = minimum [sum $ step x <$> xs | x <- [avg - 1, avg]] `div` 2
 
 main :: IO ()
 main = do
-  input <- fmap readInt . T.splitOn "," <$> readInput "day7"
+  input <- map readInt . T.splitOn "," <$> readInput "day7"
   print $ day7Part1 input
   print $ day7Part2 input

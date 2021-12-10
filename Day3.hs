@@ -32,7 +32,7 @@ day3Part1 ts = gamma * epsilon
 -- | OGR & CO2 calculated with @work@.
 -- Using zippers to traverse through list without losing information.
 day3Part2 :: [String] -> Integer
-day3Part2 = uncurry (*) . bimap readBin readBin . join work . fmap (, [])
+day3Part2 = uncurry (*) . bimap readBin readBin . join work . map (, [])
   where
     work [(xf, xb)] [(xf', xb')] = (reverse xb ++ xf, reverse xb' ++ xf')
     work zs zs'                  = work (go (p zs) zs) (go (not . p zs') zs')
@@ -43,6 +43,6 @@ day3Part2 = uncurry (*) . bimap readBin readBin . join work . fmap (, [])
 
 main :: IO ()
 main = do
-  input <- fmap T.unpack . T.lines <$> readInput "day3"
+  input <- map T.unpack . T.lines <$> readInput "day3"
   print $ day3Part1 input
   print $ day3Part2 input

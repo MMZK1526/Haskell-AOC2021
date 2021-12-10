@@ -53,6 +53,6 @@ day9Part2 hz = product $ take 3 $ sortOn negate $ F.toList (length <$> basins)
 
 main :: IO ()
 main = do
-  input <- fmap T.unpack . T.lines <$> readInput "day9"
+  input <- map T.unpack . T.lines <$> readInput "day9"
   print $ day9Part1 input
   print $ day9Part2 input

@@ -32,11 +32,11 @@ day10Part1 = sum . lefts . map checker
 day10Part2 :: [String] -> Integer
 day10Part2 xs = results !! div (length results) 2
   where
-    results  = sort (map (foldl mark 0) (rights $ fmap checker xs))
+    results  = sort $ map (foldl mark 0) (rights $ map checker xs)
     mark n c = 5 * n + snd (fromJust $ lookup c (snd <$> pairs))
 
 main :: IO ()
 main = do
-  input <- fmap T.unpack . T.lines <$> readInput "day10"
+  input <- map T.unpack . T.lines <$> readInput "day10"
   print $ day10Part1 input
   print $ day10Part2 input

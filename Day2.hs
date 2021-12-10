@@ -23,7 +23,7 @@ day2Part2 = uncurry (*) . fst . foldr go ((0, 0), 0)
 
 main :: IO ()
 main = do
-  input <- fmap (lineParser . T.words) . T.lines <$> readInput "day2"
+  input <- map (lineParser . T.words) . T.lines <$> readInput "day2"
   print $ day2Part1 input
   print $ day2Part2 input
   where

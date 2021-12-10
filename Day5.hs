@@ -37,7 +37,7 @@ day5Part2 = mapLines True
 
 main :: IO ()
 main = do
-  input <- fmap lineParser . T.lines <$> readInput "day5"
+  input <- map lineParser . T.lines <$> readInput "day5"
   print $ day5Part1 input
   print $ day5Part2 input
   where

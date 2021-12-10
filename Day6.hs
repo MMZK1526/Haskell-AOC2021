@@ -25,6 +25,6 @@ day6Part2 = simulate 256
 
 main :: IO ()
 main = do
-  input <- fmap readInt . T.splitOn "," <$> readInput "day6"
+  input <- map readInt . T.splitOn "," <$> readInput "day6"
   print $ day6Part1 input
   print $ day6Part2 input
