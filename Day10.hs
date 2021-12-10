@@ -1,5 +1,4 @@
 import           Data.Either
-import qualified Data.Foldable as F
 import           Data.List
 import           Data.Maybe
 import qualified Data.Text as T
