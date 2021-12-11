@@ -12,6 +12,7 @@ import qualified Data.Map as M
 import           Data.Maybe
 import qualified Data.Text as T
 import qualified Gadgets.Array as A
+import           Gadgets.Maybe
 import           Utilities
 
 -- | "Array" for the board and "Map" indicating whether a number is crossed.
@@ -26,9 +27,8 @@ updateBoard i (vs, bs) = (vs, M.insert i True bs)
 
 -- | Returns Nothing if the "Board" does not win, otherwise "Just" itself.
 checkBoard :: Board -> Maybe Board
-checkBoard board@(vs, bs)
-  | or [checkRow i || checkCol i | i <- [0..4]] = Just board
-  | otherwise                                   = Nothing
+checkBoard board@(vs, bs) 
+  = toMaybe (\_ -> or [checkRow i || checkCol i | i <- [0..4]]) board
   where
     checkRow i = and $ (bs M.!) . (vs A.!) . (5 * i +) <$> [0..4]
     checkCol i = and $ (bs M.!) . (vs A.!) . (i +) . (5 *) <$> [0..4]

@@ -30,6 +30,8 @@ import           Data.Tuple
 import qualified Gadgets.Array as A
 import qualified Gadgets.Array.Mutable as MA
 import qualified Gadgets.Array.ST as MA
+import           Gadgets.Maybe
+import qualified Gadgets.Set as S
 import           Text.Parsec
 import           Text.Parsec.String
 import           Utilities
