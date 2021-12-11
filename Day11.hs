@@ -1,6 +1,5 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE PatternSynonyms #-}
 
 import           Control.Monad
 import           Control.Monad.ST
@@ -29,25 +28,21 @@ initOct = map (map (, False))
 -- | Simulates one round and returns the number of flashed octapuses.
 simulate :: STArray s (Int, Int) Oct -> ST s Int
 simulate arrST = do
-  bds <- STA.range <$> STA.getBounds arrST
-  let affect S.Empty = return 0
+  let flashing mo    = mo == Just (0, True)
+      affect S.Empty = return 0
       affect flashes = do
         flashes' <- fmap concat $ forM (S.toList flashes) $ \e -> do
-          mo <- arrST MA.!? e
-          if   not $ flashing mo
-          then return []
-          else do
           arrST MA.=: e $ (0, False)
           fmap catMaybes $ forM (uncurry nbrs e) $ \e -> do
           mo <- MA.adjust' arrST updatePsv e
           return $ toMaybe ((flashing mo &&) . (`notElem` flashes)) e
         (length flashes +) <$> affect (S.fromList flashes')
+  bds     <- STA.range <$> STA.getBounds arrST
   flashes <- fmap (S.fromAscList . catMaybes) $ forM bds $ \e -> do
     mo <- MA.adjust' arrST updateAct e
     return $ toMaybe (\_ -> flashing mo) e
   affect flashes
   where
-  flashing mo    = mo == Just (0, True)
   updateAct o -- Used to increment one's self.
     | fst o == 9 = (0, True)
     | otherwise  = (fst o + 1, False)
