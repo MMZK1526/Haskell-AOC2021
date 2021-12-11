@@ -1,5 +1,9 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
+module Day9 where
+
+-- Question source: https://adventofcode.com/2021/day/9
+
 import           Data.Array (Array)
 import qualified Data.Array as A
 import qualified Data.Foldable as F
@@ -10,8 +14,6 @@ import qualified Data.Set as S
 import qualified Data.Text as T
 import qualified Gadgets.Array as A
 import           Utilities
-
--- Question source: https://adventofcode.com/2021/day/9
 
 mapWithIndex2D :: (Int -> Int -> a -> b) -> [[a]] -> [[b]]
 mapWithIndex2D f = zipWith (flip zipWith [0..] . flip f) [0..]

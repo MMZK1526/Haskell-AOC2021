@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
+module Day5 where
+
 -- Question source: https://adventofcode.com/2021/day/5
 
 import           Data.Bifunctor

@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
+module Day4 where
+
 -- Question source: https://adventofcode.com/2021/day/4
 
 import           Control.Monad

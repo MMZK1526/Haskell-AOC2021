@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+module Day7 where
+
+  -- Question source: https://adventofcode.com/2021/day/7
+
 import           Data.List
 import qualified Data.Text as T
 import           Utilities
-
--- Question source: https://adventofcode.com/2021/day/7
 
 day7Part1 :: [Integer] -> Integer
 day7Part1 xs = sum $ abs . (sort xs !! (length xs `div` 2) -) <$> xs

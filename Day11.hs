@@ -1,6 +1,10 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE FlexibleContexts #-}
 
+module Day11 where
+
+-- Question source: https://adventofcode.com/2021/day/11
+
 import           Control.Monad
 import           Control.Monad.ST
 import           Data.Array (Array)
@@ -16,8 +20,6 @@ import qualified Gadgets.Array.ST as MA
 import           Gadgets.Maybe
 import qualified Gadgets.Set as S
 import           Utilities
-
--- Question source: https://adventofcode.com/2021/day/11
 
 -- | Represents a single octapus. True if he is about to flash.
 type Oct = (Int, Bool)

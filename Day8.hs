@@ -1,13 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- Question source: https://adventofcode.com/2021/day/8
+
+module Day8 where
+
 import           Data.List
 import           Data.Map (Map)
 import qualified Data.Map as M
 import qualified Data.Text as T
 import           Data.Tuple
 import           Utilities
-
--- Question source: https://adventofcode.com/2021/day/8
 
 -- | Decode wirings into "Char" of digits.
 decode :: [String] -> Map String Char

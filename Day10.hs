@@ -1,10 +1,12 @@
+module Day10 where
+
+-- Question source: https://adventofcode.com/2021/day/10
+
 import           Data.Either
 import           Data.List
 import           Data.Maybe
 import qualified Data.Text as T
 import           Utilities
-
--- Question source: https://adventofcode.com/2021/day/10
 
 -- | Valid bracket pairs accompanied with the questions-associated values.
 pairs :: [(Char, (Char, (Integer, Integer)))]

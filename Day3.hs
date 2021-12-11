@@ -1,6 +1,8 @@
 {-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
+module Day3 where
+
 -- Question source: https://adventofcode.com/2021/day/3
 
 import           Control.Monad

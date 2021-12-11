@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+module Day6 where
+
 -- Question source: https://adventofcode.com/2021/day/6
 
 import           Control.Monad

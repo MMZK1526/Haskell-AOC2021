@@ -1,8 +1,10 @@
+module Day1 where
+
+-- Question source: https://adventofcode.com/2021/day/1
+
 import           Control.Monad
 import qualified Data.Text as T
 import           Utilities
-
--- Question source: https://adventofcode.com/2021/day/1
 
 day1Part1 :: [Integer] -> Integer
 day1Part1 = sum . map (fromIntegral . fromEnum) . ap (zipWith (<)) tail
