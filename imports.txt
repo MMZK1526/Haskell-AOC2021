@@ -10,6 +10,7 @@ import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.State
 import           Data.Array (Array)
 import qualified Data.Array as A
+import           Data.Array.ST (STArray)
 import qualified Data.Array.ST as STA
 import           Data.Bifunctor
 import           Data.Either
@@ -27,6 +28,8 @@ import qualified Data.Text as T
 import qualified Data.Text.Read as T
 import           Data.Tuple
 import qualified Gadgets.Array as A
+import qualified Gadgets.Array.Mutable as MA
+import qualified Gadgets.Array.ST as MA
 import           Text.Parsec
 import           Text.Parsec.String
 import           Utilities

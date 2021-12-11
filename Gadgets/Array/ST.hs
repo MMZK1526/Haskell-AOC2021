@@ -26,10 +26,10 @@ thaw = A.thaw
 
 -- | This is the same as the default @unsafeFreeze@ function, but it has
 -- specified type to avoid explicit signature binding.
-unsafeFreeze :: STArray s Int a -> ST s (Array Int a)
+unsafeFreeze :: Ix i => STArray s i a -> ST s (Array i a)
 unsafeFreeze = A.unsafeFreeze
 
 -- | This is the same as the default @unsafeThaw@ function, but it has specified
 -- type to avoid explicit signature binding.
-unsafeThaw :: Array Int a -> ST s (STArray s Int a)
+unsafeThaw :: Ix i => Array i a -> ST s (STArray s i a)
 unsafeThaw = A.unsafeThaw

@@ -9,15 +9,12 @@ import qualified Data.Array.ST as STA
 import           Data.Bifunctor
 import           Data.List
 import qualified Data.Text as T
+import qualified Gadgets.Array as A
 import qualified Gadgets.Array.Mutable as MA
 import qualified Gadgets.Array.ST as MA
 import           Utilities
 
 -- Question source: https://adventofcode.com/2021/day/11
-
-to2DArray :: [[a]] -> Array (Int, Int) a
-to2DArray xz = A.array ((0, 0), (length (head xz) - 1, length xz - 1)) $ concat
-             $ zipWith (flip zipWith [0..] . flip (((,) .) . (,))) [0..] xz
 
 -- | Represents a single octapus. True if he is about to flash.
 type Oct = (Int, Bool)
@@ -52,12 +49,12 @@ simulate arrST = do
 
 day11Part1 :: [[Int]] -> Integer
 day11Part1 xz = runST $ do
-  arrST <- MA.thaw $ to2DArray $ initOct xz
+  arrST <- MA.thaw $ A.from2DListC $ initOct xz
   fmap sum $ forM [1..100] $ \_ -> simulate arrST
 
 day11Part2 :: [[Int]] -> Integer
 day11Part2 xz = runST $ do
-  arrST <- MA.thaw $ to2DArray $ initOct xz
+  arrST <- MA.thaw $ A.from2DListC $ initOct xz
   size  <- genericLength . STA.range <$> STA.getBounds arrST
   let findSync x = do
       count <- simulate arrST

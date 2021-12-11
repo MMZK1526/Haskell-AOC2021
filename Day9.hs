@@ -16,14 +16,10 @@ import           Utilities
 mapWithIndex2D :: (Int -> Int -> a -> b) -> [[a]] -> [[b]]
 mapWithIndex2D f = zipWith (flip zipWith [0..] . flip f) [0..]
 
-to2DArray :: [[a]] -> Array (Int, Int) a
-to2DArray xz = A.array ((0, 0), (length (head xz) - 1, length xz - 1)) $ concat
-             $ mapWithIndex2D (((,) .) . (,)) xz
-
 day9Part1 :: [[Char]] -> Int
 day9Part1 hz = sum $ concat $ mapWithIndex2D bar hz
   where
-    hzArr     = to2DArray hz
+    hzArr     = A.from2DListC hz
     bar x y h = if h < minimum (neighbours x y) then read [h] + 1 else 0
     neighbours x y
       = mapMaybe (hzArr A.!?) [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
