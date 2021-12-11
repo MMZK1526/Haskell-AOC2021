@@ -35,7 +35,7 @@ simulate arrST = do
       affect flashes = do
         flashes' <- fmap concat $ forM (S.toList flashes) $ \e -> do
           arrST MA.=: e $ (0, False)
-          fmap catMaybes $ forM (uncurry nbrs e) $ \e -> do
+          fmap catMaybes $ forM (nbrs e) $ \e -> do
           mo <- MA.adjust' arrST updatePsv e
           return $ toMaybe ((flashing mo &&) . (`notElem` flashes)) e
         (length flashes +) <$> affect (S.fromList flashes')
@@ -45,13 +45,13 @@ simulate arrST = do
     return $ toMaybe (\_ -> flashing mo) e
   affect flashes
   where
-  updateAct o -- Used to increment one's self.
-    | fst o == 9 = (0, True)
-    | otherwise  = (fst o + 1, False)
-  updatePsv o -- Used to increment neighbours.
-    | fst o == 0 = o
-    | otherwise  = updateAct o
-  nbrs x y = [bimap f g (x, y) | (f, g) <- join (liftM2 (,)) [pred, id, succ]]
+    updateAct o -- Used to increment one's self.
+      | fst o == 9 = (0, True)
+      | otherwise  = (fst o + 1, False)
+    updatePsv o -- Used to increment neighbours.
+      | fst o == 0 = o
+      | otherwise  = updateAct o
+    nbrs pt = flip (uncurry bimap) pt <$> join (liftM2 (,)) [pred, id, succ]
 
 day11Part1 :: [[Int]] -> Int
 day11Part1 xz = runST $ do
