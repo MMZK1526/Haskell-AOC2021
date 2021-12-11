@@ -3,7 +3,7 @@
 module Gadgets.Array.ST where
 
 import           Control.Monad.ST (ST)
-import           Data.Array (Array)
+import           Data.Array (Array, Ix)
 import qualified Data.Array.ST as A
 import qualified Data.Array.Unsafe as A
 import qualified Gadgets.Array as A
@@ -16,12 +16,12 @@ fromList = thaw . A.fromList
 
 -- | This is the same as the default @freeze@ function, but it has specified
 -- type to avoid explicit signature binding.
-freeze :: STArray s Int a -> ST s (Array Int a)
+freeze :: Ix i => STArray s i a -> ST s (Array i a)
 freeze = A.freeze
 
 -- | This is the same as the default @thaw@ function, but it has specified type
 -- to avoid explicit signature binding.
-thaw :: Array Int a -> ST s (STArray s Int a)
+thaw :: Ix i => Array i a -> ST s (STArray s i a)
 thaw = A.thaw
 
 -- | This is the same as the default @unsafeFreeze@ function, but it has

@@ -13,13 +13,18 @@ fromList = A.thaw . A.fromList
 
 -- | Adjusts a value in the array with the given function.
 -- It will do nothing if the index is out of bound.
-adjust :: (Ix i, MArray a e m) => a i e -> (e -> e) -> i -> m ()
+adjust :: (Ix i, MArray a e m) => a i e -> (e -> e) -> i -> m (Maybe e)
 adjust arrST f i = do
-  x <- arrST ! i
-  arrST =: i $ f x
+  mx <- arrST !? i
+  case mx of 
+    Nothing -> return Nothing
+    Just x  -> do
+      let x' = f x
+      arrST =: i $ x'
+      return $ Just x'
 
 -- | Strict version of "adjust".
-adjust' :: (Ix i, MArray a e m) => a i e -> (e -> e) -> i -> m ()
+adjust' :: (Ix i, MArray a e m) => a i e -> (e -> e) -> i -> m (Maybe e)
 adjust' = (. ap seq) . adjust
 
 -- | Same as @readArray@, but infix.
@@ -42,7 +47,7 @@ arrST !? i = do
 infixl 3 =:
 (=:) :: (Ix i, MArray a e m) => a i e -> i -> e -> m ()
 (=:) arrST i e = do
-  (inf, sup) <- A.getBounds arrST
-  if i < inf || i > sup
+  bds <- A.getBounds arrST
+  if not $ A.inRange bds i
     then return ()
     else A.writeArray arrST i e
