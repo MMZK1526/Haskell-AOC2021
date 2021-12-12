@@ -13,6 +13,7 @@ import qualified Data.Array as A
 import           Data.Array.ST (STArray)
 import qualified Data.Array.ST as STA
 import           Data.Bifunctor
+import           Data.Char
 import           Data.Either
 import qualified Data.Foldable as F
 import           Data.List
