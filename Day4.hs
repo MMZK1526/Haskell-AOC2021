@@ -53,8 +53,7 @@ day4Part2 (n : ns) boards = case loseBoards of
 main :: IO ()
 main = do
   nums' : _ : boards' <- T.lines <$> readInput "day4"
-  let nums   = numParser nums'
-  let boards = initBoard <$> boardParser boards'
+  let (nums, boards) = (numParser nums', initBoard <$> boardParser boards')
   print $ day4Part1 nums boards
   print $ day4Part2 nums boards
   where

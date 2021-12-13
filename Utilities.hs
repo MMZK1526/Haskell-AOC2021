@@ -8,7 +8,7 @@ import qualified Data.Text.Read as T
 import           Gadgets.IO
 
 readInput :: String -> IO Text
-readInput path = do
+readInput path = 
   handleDNE (const $ T.readFile (path ++ ".txt")) $ T.readFile path
 
 readInt :: Text -> Integer
