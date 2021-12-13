@@ -44,4 +44,4 @@ main = do
   print $ day5Part2 input
   where
     lineParser = bimap (sp readInt ",") (sp readInt ",") . sp id " -> "
-    sp f s str = let [a, b] = T.splitOn s str in bimap f f (a, b)
+    sp f       = (bimap f f .) . splitPair

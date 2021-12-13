@@ -42,4 +42,4 @@ main = do
   print $ day12Part1 input
   print $ day12Part2 input
   where
-    lineParser str = let [a, b] = T.unpack <$> T.splitOn "-" str in (a, b)
+    lineParser = listToPair . map T.unpack . T.splitOn "-"

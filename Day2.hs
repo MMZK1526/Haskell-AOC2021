@@ -5,6 +5,7 @@ module Day2 where
 
 -- Question source: https://adventofcode.com/2021/day/2
 
+import           Data.Bifunctor
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Utilities
@@ -25,8 +26,6 @@ day2Part2 = uncurry (*) . fst . foldl go ((0, 0), 0)
 
 main :: IO ()
 main = do
-  input <- map (lineParser . T.words) . T.lines <$> readInput "day2"
+  input <- map (second readInt . splitPair " ") . T.lines <$> readInput "day2"
   print $ day2Part1 input
   print $ day2Part2 input
-  where
-    lineParser [op, c] = (op , readInt c)

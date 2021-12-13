@@ -14,22 +14,21 @@ import qualified Data.Text as T
 import           Data.Tuple
 import           Utilities
 
-origami :: Set (Integer, Integer) -> (Text, Integer) -> Set (Integer, Integer)
+origami :: Set (Int, Int) -> (Text, Int) -> Set (Int, Int)
 origami pts (d, n) = S.map go pts
   where
-    go (x, y)
-      | (d == "x" && x < n) || ( d == "y" && y < n ) = (x, y)
-      | otherwise                                    = mapfs ((2 * n) -) (x, y)
+    go pt@(x, y)
+      | (d == "x" && x < n) || (d == "y" && y < n) = pt
+      | otherwise                                  = mapfs ((2 * n) -) pt
     mapfs = if d == "x" then first else second
 
-day13Part1 :: [(Integer, Integer)] -> (Text, Integer) -> Int
+day13Part1 :: [(Int, Int)] -> (Text, Int) -> Int
 day13Part1 = (length .) . origami . S.fromList
 
-day13Part2 :: [(Integer, Integer)] -> [(Text, Integer)] -> IO ()
+day13Part2 :: [(Int, Int)] -> [(Text, Int)] -> IO ()
 day13Part2 pts ops = do
   let result = sortOn swap $ S.toList $ foldl origami (S.fromList pts) ops
-  let config = zipWith minus ((-1, 0) : result) result
-  forM_ config $ \(x, lineFeed) -> do
+  forM_ (zipWith minus ((-1, 0) : result) result) $ \(x, lineFeed) -> do
     when lineFeed $ putStrLn ""
     putStr $ replicate (fromIntegral x - 1) ' ' ++ "\x25A0"
   putStrLn ""
@@ -45,5 +44,5 @@ main = do
   print $ day13Part1 pts (head ops)
   day13Part2 pts ops
   where
-    ptParser str = let [a, b] = readInt <$> T.splitOn "," str in (a, b)
-    opParser str = let [a, b] = T.splitOn "=" $ last (T.words str) in (a, readInt b)
+    ptParser = listToPair . map readInt . T.splitOn ","
+    opParser = second readInt . listToPair . T.splitOn "=" . last . T.words
