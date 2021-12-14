@@ -12,6 +12,7 @@ import qualified Day10
 import qualified Day11
 import qualified Day12
 import qualified Day13
+import qualified Day14
 
 days :: [IO ()]
 days = [ Day1.main
@@ -26,7 +27,8 @@ days = [ Day1.main
        , Day10.main
        , Day11.main
        , Day12.main
-       , Day13.main ]
+       , Day13.main
+       , Day14.main ]
 
 main :: IO ()
 main = ((flip .) . flip) zipWithM_ [1..] days $ \i response -> do

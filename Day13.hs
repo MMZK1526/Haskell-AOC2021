@@ -30,7 +30,7 @@ day13Part2 pts ops = do
   let result = sortOn swap $ S.toList $ foldl origami (S.fromList pts) ops
   forM_ (zipWith minus ((-1, 0) : result) result) $ \(x, lineFeed) -> do
     when lineFeed $ putStrLn ""
-    putStr $ replicate (fromIntegral x - 1) ' ' ++ "\x25A0"
+    putStr $ replicate (fromIntegral x - 1) ' ' ++ "\x2588"
   putStrLn ""
   where
     minus (x, y) (x', y')
