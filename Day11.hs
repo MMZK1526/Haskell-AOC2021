@@ -22,13 +22,13 @@ import           Gadgets.Maybe
 import qualified Gadgets.Set as S
 import           Utilities
 
--- | Represents a single octapus. True if he is about to flash.
+-- | Represents a single octopus. True if he is about to flash.
 type Oct = (Int, Bool)
 
 initOct :: [[Int]] -> [[Oct]]
 initOct = map (map (, False))
 
--- | Simulates one round and returns the number of flashed octapuses.
+-- | Simulates one round and returns the number of flashed octopuses.
 simulate :: STArray s (Int, Int) Oct -> ST s Int
 simulate arrST = do
   let flashing mo    = mo == Just (0, True)
