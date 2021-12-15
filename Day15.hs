@@ -1,4 +1,4 @@
--- module Day15 where
+module Day15 where
 
 -- Question source: https://adventofcode.com/2021/day/15
 
@@ -12,28 +12,26 @@ import           Utilities
 
 -- | Uses a series of right/down DP and left/up with the previous cache.
 day15Part1 :: [[Int]] -> Int
-day15Part1 rz = fst (optimise initTable A.! (0, 0)) - rzArr A.! (0, 0)
+day15Part1 rz = fst (optimise False initTable A.! (0, 0)) - rzArr A.! (0, 0)
   where
-    initTable         = A.tabulate ((0, 0), rMax) initialiser
-    rzArr             = A.from2DListC rz
-    rMax@(xMax, yMax) = snd $ A.bounds rzArr
-    initialiser (x, y)
-      | x == xMax && y == yMax = (rzArr A.! rMax, True)
-      | otherwise              = (maxBound, False)
-    optimise hArr
+    initTable = A.tabulate ((0, 0), rMax) (const (rzArr A.! rMax, False))
+    rzArr     = A.from2DListC rz
+    rMax      = snd $ A.bounds rzArr
+    -- When c is False (first iteration), we don't look into the cache.
+    optimise c hArr
       | snd $ table A.! (0, 0) = table
-      | otherwise              = optimise table
+      | otherwise              = optimise True table
       where
         table = A.tabulate ((0, 0), rMax) go
         go (x, y)
-          | b         = v
-          | newV == h = (newV, True)
-          | otherwise = (newV, False)
+          | b || (x, y) == rMax = (h, True)
+          | newV == h           = (newV, True)
+          | otherwise           = (newV, False)
           where
-            newV     = rzArr A.! (x, y) + fst (minimum $ catMaybes steps)
-            steps    = map (table A.!?) [(x + 1, y), (x, y + 1)]
-                    ++ map (hArr  A.!?) [(x - 1, y), (x, y - 1)]
-            v@(h, b) = hArr A.! (x, y)
+            newV   = rzArr A.! (x, y) + fst (minimum $ catMaybes steps)
+            steps  = map (table A.!?) [(x + 1, y), (x, y + 1)]
+                  ++ if c then map (hArr A.!?) [(x - 1, y), (x, y - 1)] else []
+            (h, b) = hArr A.! (x, y)
 
 day15Part2 :: [[Int]] -> Int
 day15Part2 = day15Part1 . map (liftM2 add [0..4]) . liftM2 (map . add) [0..4]
