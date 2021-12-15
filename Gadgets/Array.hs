@@ -22,7 +22,6 @@ from2DListC xz = array ((0, 0), (length (head xz) - 1, length xz - 1)) $ concat
 
 -- | Adjusts a value in the array with the given function.
 -- It will do nothing if the index is out of bound.
--- {-# INLINE adjust #-}
 adjust :: Ix i => Array i a -> (a -> a) -> i -> Array i a
 adjust arr f i = arr // [(i, f $ arr ! i)]
 
@@ -34,6 +33,11 @@ adjust' = (. ap seq) . adjust
 {-# INLINE tabulate #-}
 tabulate :: Ix i => (i, i) -> (i -> a) -> Array i a
 tabulate (u, v) f = array (u, v) [ (i, f i) | i <- range (u, v)]
+
+-- | Strict version of "tabulate".
+{-# INLINE tabulate' #-}
+tabulate' :: Ix i => (i, i) -> (i -> a) -> Array i a
+tabulate' = (. ap seq) . tabulate
 
 -- | Safe array access.
 infixr 4 !?

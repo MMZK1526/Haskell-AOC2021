@@ -22,7 +22,7 @@ day15Part1 rz = fst (optimise False initTable A.! (0, 0)) - rzArr A.! (0, 0)
       | snd $ table A.! (0, 0) = table
       | otherwise              = optimise True table
       where
-        table = A.tabulate ((0, 0), rMax) go
+        table = A.tabulate' ((0, 0), rMax) go
         go (x, y)
           | b || (x, y) == rMax = (h, True)
           | newV == h           = (newV, True)
