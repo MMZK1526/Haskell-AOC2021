@@ -2,12 +2,14 @@
 
 module Utilities where
 
+import           Data.Char
 import           Data.Either
 import           Data.Text (Text, pack, unpack)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Data.Text.Read as T
 import           Gadgets.IO
+import           Numeric
 
 listToPair [a, b] = (a, b)
 
@@ -20,3 +22,9 @@ readInt = fst . fromRight undefined . T.signed T.decimal . T.stripStart
 
 splitPair :: Text -> Text -> (Text, Text)
 splitPair = (listToPair .) . T.splitOn
+
+binToDec :: Integral i => String -> i
+binToDec = foldl ((. (fromIntegral . digitToInt)) . (+) . (2 *)) 0
+
+hexToBin :: String -> String
+hexToBin = flip (showIntAtBase 2 intToDigit . fst . head . readHex) ""

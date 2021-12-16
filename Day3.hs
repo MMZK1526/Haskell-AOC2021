@@ -13,9 +13,6 @@ import           Utilities
 
 readBin :: String -> Integer
 readBin = binToDec . read
-  where
-    binToDec 0 = 0
-    binToDec i = 2 * binToDec (div i 10) + mod i 10
 
 -- | Find the most common bit in the given bit-String.
 bitTest :: String -> Char

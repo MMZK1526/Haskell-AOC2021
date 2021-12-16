@@ -6,7 +6,6 @@ import           Control.Monad
 import qualified Data.Array as A
 import           Data.Maybe
 import qualified Data.Text as T
-import qualified Data.Text.Read as T
 import qualified Gadgets.Array as A
 import           Utilities
 
