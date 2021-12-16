@@ -9,12 +9,12 @@ import qualified Data.Text as T
 import           Text.Parsec
 import           Utilities
 
-data BITS = V Int Int | O Int Int [BITS]
+data BITS = V Int Integer | O Int Int [BITS]
 
 decodeBITS :: String -> BITS
-decodeBITS = fst . fromRight undefined . parse parseBITS "" . concatMap toDec
+decodeBITS = fst . fromRight undefined . parse parseBITS "" . concatMap toBin
   where
-    toDec x    = let bin = hexToBin [x] 
+    toBin x    = let bin = hexToBin [x]
                  in  replicate (4 - length bin) '0' ++ bin
     parseBITS  = do
       v <- binToDec <$> count 3 anyChar
@@ -46,17 +46,17 @@ day16Part1 = sumV . decodeBITS
     sumV (V v _)      = v
     sumV (O v _ bits) = v + sum (sumV <$> bits)
 
-day16Part2 :: String -> Int
+day16Part2 :: String -> Integer
 day16Part2 = evalBITS . decodeBITS
   where
     evalBITS (V _ v) = v
     evalBITS (O _ t bits)
       | t < 4     = (listOps A.! t) vs
-      | otherwise = let [a, b] = vs in fromEnum $ (pairOps A.! t) a b
+      | otherwise = fromIntegral $ fromEnum $ (pairOps A.! t) $ listToPair vs
       where
         vs      = evalBITS <$> bits
         listOps = A.listArray (0, 3) [sum, product, minimum, maximum]
-        pairOps = A.listArray (5, 7) [(>), (<), (==)]
+        pairOps = A.listArray (5, 7) $ uncurry <$> [(>), (<), (==)]
 
 main :: IO ()
 main = do
