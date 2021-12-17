@@ -16,15 +16,18 @@ day17Part1 _ (y, _) = -y * (-y - 1) `div` 2
 day17Part2 :: (Int, Int) -> (Int, Int) -> Int
 day17Part2 (x, x') (y, y') = length valid0s
   where
-    valid0s    = [(x0, y0) | x0 <- x0s, y0 <- y0s, match (simX x0) (simY y0)]
+    valid0s    = [0 | xR <- simX <$> x0s, yR <- simY <$> y0s, match xR yR]
     x0s        = [ceiling ((sqrt (1 + 8 * fromIntegral x) - 1) / 2)..x']
     y0s        = [y..(-y - 1)]
-    simX x0    = let stay = maybe (maxBound :: Int) floor
-                 in  (ceiling $ fromJust $ solveX x0 x, stay $ solveX x0 x')
+    simX x0    = (ceiling $ fromJust $ solveX x0 x, drag $ solveX x0 x')
     simY y0    = (ceiling $ solveY y0 y', floor $ solveY y0 y)
+    drag       = maybe (maxBound :: Int) floor
     solveX v c = let b     = 2 * fromIntegral v + 1
                      delta = b ** 2 - 8 * fromIntegral c
-                 in  toMaybe (const $ delta > 0) $ (b - sqrt delta) / 2
+                     root  = (b - sqrt delta) / 2
+                     stay  = delta > 0 
+                          || (delta == 0 && root == fromIntegral (floor root))
+                 in  toMaybe (const stay) $ (b - sqrt delta) / 2
     solveY v c = let b = 2 * fromIntegral v + 1
                  in  (b + sqrt (b ** 2 - 8 * fromIntegral c)) / 2
     match a b  = fst a <= snd b && fst b <= snd a 
