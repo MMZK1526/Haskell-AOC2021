@@ -25,12 +25,12 @@ day17Part2 (x, x') (y, y') = length valid0s
     solveX v c = let b     = 2 * fromIntegral v + 1
                      delta = b ** 2 - 8 * fromIntegral c
                      root  = (b - sqrt delta) / 2
-                     stay  = delta > 0 
-                          || (delta == 0 && root == fromIntegral (floor root))
+                     stay  = delta > 0
+                          || delta == 0 && root == fromIntegral (floor root)
                  in  toMaybe (const stay) $ (b - sqrt delta) / 2
     solveY v c = let b = 2 * fromIntegral v + 1
                  in  (b + sqrt (b ** 2 - 8 * fromIntegral c)) / 2
-    match a b  = fst a <= snd b && fst b <= snd a 
+    match a b  = fst a <= snd b && fst b <= snd a
               && uncurry (<=) a && uncurry (<=) b
 
 main :: IO ()
