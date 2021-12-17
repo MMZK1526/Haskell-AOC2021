@@ -34,7 +34,7 @@ import qualified Gadgets.Array.ST as MA
 import qualified Gadgets.Counter as C
 import           Gadgets.Maybe
 import qualified Gadgets.Set as S
-import           Numeric
+import qualified Numeric as N
 import           Text.Parsec
 import           Text.Parsec.String
 import           Utilities

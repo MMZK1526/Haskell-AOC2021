@@ -9,7 +9,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Data.Text.Read as T
 import           Gadgets.IO
-import           Numeric
+import qualified Numeric as N
 
 listToPair [a, b] = (a, b)
 
@@ -27,4 +27,4 @@ binToDec :: Integral i => String -> i
 binToDec = foldl ((. (fromIntegral . digitToInt)) . (+) . (2 *)) 0
 
 hexToBin :: String -> String
-hexToBin = flip (showIntAtBase 2 intToDigit . fst . head . readHex) ""
+hexToBin = flip (N.showIntAtBase 2 intToDigit . fst . head . N.readHex) ""

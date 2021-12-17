@@ -14,8 +14,7 @@ data BITS = V Int Integer | O Int Int [BITS]
 decodeBITS :: String -> BITS
 decodeBITS = fst . fromRight undefined . parse parseBITS "" . concatMap toBin
   where
-    toBin x    = let bin = hexToBin [x]
-                 in  replicate (4 - length bin) '0' ++ bin
+    toBin x    = let b = hexToBin [x] in replicate (4 - length b) '0' ++ b
     parseBITS  = do
       v <- binToDec <$> count 3 anyChar
       t <- binToDec <$> count 3 anyChar
