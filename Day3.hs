@@ -11,9 +11,6 @@ import           Data.List
 import qualified Data.Text as T
 import           Utilities
 
-readBin :: String -> Integer
-readBin = binToDec . read
-
 -- | Find the most common bit in the given bit-String.
 bitTest :: String -> Char
 bitTest = go 0 0
@@ -25,13 +22,13 @@ bitTest = go 0 0
 day3Part1 :: [String] -> Integer
 day3Part1 ts = gamma * epsilon
   where
-    gamma   = readBin $ bitTest <$> transpose ts
+    gamma   = binToDec $ bitTest <$> transpose ts
     epsilon = 2 ^ length (head ts) - 1 - gamma
 
 -- | OGR & CO2 calculated with @work@.
 -- Using zippers to traverse through list without losing information.
 day3Part2 :: [String] -> Integer
-day3Part2 = uncurry (*) . bimap readBin readBin . join work . map (, [])
+day3Part2 = uncurry (*) . bimap binToDec binToDec . join work . map (, [])
   where
     work [(xf, xb)] [(xf', xb')] = (reverse xb ++ xf, reverse xb' ++ xf')
     work zs zs'                  = work (go (p zs) zs) (go (not . p zs') zs')
