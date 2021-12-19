@@ -18,6 +18,12 @@ clear = M.delete
 empty :: Counter a
 empty = M.empty
 
+-- | Groups equal elements in a list together, returning a list of pairs where
+-- The second element represents the count of the first element in the original
+-- list.
+group :: Ord a => [a] -> [(a, Integer)]
+group = toPairList . fromList
+
 -- | Generates a "Counter" from a list.
 fromList :: Ord a => [a] -> Counter a
 fromList = foldr inc empty

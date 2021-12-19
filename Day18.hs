@@ -7,7 +7,7 @@ import           Data.Bifunctor
 import qualified Data.Text as T
 import           Utilities
 
-add :: [(Integer, Integer)] -> [(Integer, Integer)] -> [(Integer, Integer)]
+add :: [(Integer, Int)] -> [(Integer, Int)] -> [(Integer, Int)]
 add = (eval .) . (. map (second (1 +))) . (++) . map (second (1 +))
   where
     eval xs
@@ -32,7 +32,7 @@ add = (eval .) . (. map (second (1 +))) . (++) . map (second (1 +))
                         in  ((oI, oN) : (q, n + 1) : (q + r, n + 1) : xs, True)
           | otherwise = first ((oI, oN) :) $ split (i, n) xs
 
-magnitude :: [(Integer, Integer)] -> Integer
+magnitude :: [(Integer, Int)] -> Integer
 magnitude xs
   | [(i, 0)] <- xs' = i
   | otherwise       = magnitude xs'
@@ -43,10 +43,10 @@ magnitude xs
     magnitude1 xs = xs
     xs'           = magnitude1 xs
 
-day18Part1 :: [[(Integer, Integer)]] -> Integer
+day18Part1 :: [[(Integer, Int)]] -> Integer
 day18Part1 = magnitude . foldl1 add
 
-day18Part2 :: [[(Integer, Integer)]] -> Integer
+day18Part2 :: [[(Integer, Int)]] -> Integer
 day18Part2 = maximum . join (liftM2 ((magnitude .) . add))
 
 main :: IO ()
