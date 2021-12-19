@@ -66,8 +66,8 @@ day19Part1 scs = length . S.fromList . concat . zipWith merge [0..]
     merge i = let (r, oft) = scs M.! i in map (flip (zipWith (+)) oft . rot r)
 
 day19Part2 :: Map Int (Rotation, [Int]) -> Int
-day19Part2
-  = maximum . join (liftM2 ((sum .) . zipWith (-))) . M.elems . M.map snd
+day19Part2 = maximum . join (liftM2 ((sum .) . zipWith ((abs .) . (-)))) 
+           . M.elems . M.map snd
 
 main :: IO ()
 main = do
