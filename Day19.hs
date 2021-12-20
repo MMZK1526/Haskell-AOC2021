@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
 module Day19 where
 
@@ -48,10 +49,9 @@ scannerPs pz = findScannerPos (S.singleton 0) (M.singleton 0 (rid, [0, 0, 0]))
            guard $ i /= i'
            commons              <- cmp ps ps'
            return ((i, i'), second snd commons)
-    findScannerPos S.Empty  known = known
-    findScannerPos frontier known = go fs known scannerRPos
+    findScannerPos S.Empty      known = known
+    findScannerPos (f S.:<| fs) known = go fs known scannerRPos
       where
-        (f, fs)    = fromJust $ S.minView frontier
         go fs k [] = findScannerPos fs k
         go fs k (((i, j), (t, pos)) : ps)
           | f == i && M.notMember j k = go (S.insert j fs) k' ps
