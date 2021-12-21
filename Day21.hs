@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Day21 where
 
 -- Question source: https://adventofcode.com/2021/day/21
@@ -9,6 +7,7 @@ import qualified Data.Array as A
 import           Data.Bifunctor
 import           Data.Maybe
 import qualified Data.Text as T
+import           Data.Tuple
 import qualified Gadgets.Array as A
 import           Utilities
 
@@ -21,25 +20,20 @@ day21Part1 a b = go 0 1 a b 0 0
   where
     go i d pA pB sA sB
       | sA >= 1000 = i * sB
-      | sB >= 1000 = i * sA
-      | even i     = go (i + 3) d' pA' pB (sA + pA') sB
-      | otherwise  = go (i + 3) d' pA pB' sA (sB + pB')
+      | otherwise  = go (i + 3) ((d + 3) `mod'` 100) pB pA' sB (sA + pA')
       where
-        d'         = (d + 3) `mod'` 100
-        (pA', pB') = bimap (move (3 * d + 3)) (move (3 * d + 3)) (pA, pB)
+        pA' = move (3 * d + 3) pA
 
 day21Part2 :: Int -> Int -> Integer
-day21Part2 a b = uncurry max $ table A.! (a, b, 21, 21, False)
+day21Part2 a b = uncurry max $ table A.! (a, b, 21, 21)
   where
     coes  = A.array (3, 9) $ zip [3..9] [1, 3, 6, 7, 6, 3, 1]
-    table = A.tabulate ((0, 0, 1, 1, False), (10, 10, 21, 21, True)) go
-    go (pA, pB, rA, rB, b)
-      = foldl1 (ap (bimap . (+) . fst) ((+) . snd)) $ roll1 b <$> [3..9]
+    table = A.tabulate ((0, 0, 1, 1), (10, 10, 21, 21)) go
+    go (pA, pB, rA, rB)
+      = foldl1 (ap (bimap . (+) . fst) ((+) . snd)) $ roll1 <$> [3..9]
       where
-        roll1 False n = join bimap (* coes A.! n) $ fromMaybe (1, 0)
-                      $ table A.!? (move n pA, pB, rA - move n pA, rB, True)
-        roll1 True  n = join bimap (* coes A.! n) $ fromMaybe (0, 1)
-                      $ table A.!? (pA, move n pB, rA, rB - move n pB, False)
+        roll1 n = swap $ join bimap (* coes A.! n) $ fromMaybe (1, 0)
+                       $ table A.!? (pB, move n pA, rB, rA - move n pA)
 
 main :: IO ()
 main = do
