@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
 module Day22 where
 
@@ -13,7 +12,7 @@ import           Utilities
 
 day22Part1 :: [(Text, [(Int, Int)])] -> Integer
 day22Part1 = day22Part2 . filter (all (uncurry (<=)) . snd) 
-           . map (second (map (bimap (max (-50)) (min 50))))
+           . map (second (map (bimap (max $ -50) (min 50))))
 
 -- | Note that the worst case is exponential when most of the cubes intersect.
 -- Works for the given input.
@@ -29,9 +28,9 @@ day22Part2 ps = go ps
         s = sumCube p
     intersect   = zipWith (\(a, a') (b, b') -> (max a b, min a' b'))
     go []       = 0
-    go ((op, p) : ps) = case op of
-      "on"  -> go ps + sumCube p - sumCubes (intersect p . snd <$> ps)
-      "off" -> go ps
+    go ((op, p) : ps) 
+      | op == "on" = go ps + sumCube p - sumCubes (intersect p . snd <$> ps)
+      | otherwise  = go ps
 
 main :: IO ()
 main = do
