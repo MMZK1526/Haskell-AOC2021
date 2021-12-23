@@ -5,11 +5,15 @@ module Gadgets.Map where
 
 import           Data.Map (Map)
 import qualified Data.Map as M
+import           Data.Tuple (swap)
 
 pattern Empty :: Map k a
 pattern Empty <- (M.null -> True)
   where
     Empty = M.empty
+
+swapkv :: Ord a => Map k a -> Map a k
+swapkv = M.fromList . map swap . M.assocs
 
 infixr 5 :<|
 pattern (:<|) :: Ord k => (k, a) -> Map k a -> Map k a
