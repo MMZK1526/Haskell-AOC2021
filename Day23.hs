@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 
--- module Day23 where
+module Day23 where
 
 -- Question source: https://adventofcode.com/2021/day/23
 
@@ -96,16 +96,15 @@ main = do
   print $ day23Part1 $ toGame 2 rawGame
   print $ day23Part2 $ toGame 4 $ addMd rawGame
   where
-    parseRaw     = fst . foldr (uncurry (flip . flip goLine))
-                              (M.empty, M.fromList $ zip "ABCD" $ repeat 1)
+    parseRaw     = fst . foldr (uncurry ((. zip [-1..]) . flip . foldr . go))
+                               (M.empty, M.fromList $ zip "ABCD" $ repeat 1)
                        . zip [1..]
-    goLine raw i = foldr (go i) raw . zip [-1..]
     go i (j, ch) raw@(rs, counts)
       | ch `elem` "# " = raw
       | otherwise      = ( M.insert (ch : show (counts M.! ch)) (j, i) rs
                          , M.adjust (+ 1) ch counts )
-    addMd raw    = M.union middle
-                 $ M.map (\p@(x, y) -> if y == 1 then p else (x, 4)) raw
+    addMd        = M.union middle
+                 . M.map (\p@(x, y) -> if y == 1 then p else (x, 4))
     middle       = M.fromList [ ("D3", (2, 2)), ("C3", (4, 2)), ("B3", (6, 2))
                               , ("A3", (8, 2)), ("D4", (2, 3)), ("B4", (4, 3))
                               , ("A4", (6, 3)), ("C4", (8, 3)) ]
