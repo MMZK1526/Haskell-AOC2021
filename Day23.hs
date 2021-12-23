@@ -4,7 +4,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TupleSections #-}
 
-module Day23 where
+-- module Day23 where
 
 -- Question source: https://adventofcode.com/2021/day/23
 
@@ -43,82 +43,93 @@ import           Text.Parsec
 import           Text.Parsec.String
 import           Utilities
 
-type Game = (Map String (Int, Int), Map (Int, Int) String)
+type Game =
+  (Map String (Int, Int), Map String Int, Map (Int, Int) String, Array Int Int)
 
 day23 :: Game
-day23 = (M.fromList [("A1", (2,1)),("A2", (8,2)),("B1", (2,2)),("B2", (6,1)),("C1", (4,2)),("C2", (8,1)),("D1", (6,2)),("D2", (4,1))], M.fromList [((2,1), "A1"),((2,2), "B1"),((4,1), "D2"),((4,2), "C1"),((6,1), "B2"),((6,2), "D1"),((8,1), "C2"),((8,2), "A2")])
+day23 = (M.fromList [("A1", (2,1)),("A2", (8,2)),("B1", (2,2)),("B2", (6,1)),("C1", (4,2)),("C2", (8,1)),("D1", (6,2)),("D2", (4,1))], M.empty, M.fromList [((2,1), "A1"),((2,2), "B1"),((4,1), "D2"),((4,2), "C1"),((6,1), "B2"),((6,2), "D1"),((8,1), "C2"),((8,2), "A2")], A.fromList $ replicate 4 $ -1)
 
-test :: Game
-test = (M.fromList [("A1", (2,2)),("A2", (8,2)),("B1", (2,1)),("B2", (6,1)),("C1", (4,1)),("C2", (6,2)),("D1", (4,2)),("D2", (8,1))], M.fromList [((2,1), "B1"),((2,2), "A1"),((4,1), "C1"),((4,2), "D1"),((6,1), "B2"),((6,2), "C2"),((8,1), "D2"),((8,2), "A2")])
+day23' :: Game
+day23' = (M.fromList [("A1", (2,1)),("A2", (8,4)),("B1", (2,4)),("B2", (6,1)),("C1", (4,4)),("C2", (8,1)),("D1", (6,4)),("D2", (4,1)),("D3", (2,2)),("C3", (4,2)),("B3", (6,2)),("A3", (8,2)),("D4", (2,3)),("B4", (4,3)),("A4", (6,3)),("C4", (8,3))], M.empty, M.fromList [((2,1), "A1"),((2,4), "B1"),((4,1), "D2"),((4,4), "C1"),((6,1), "B2"),((6,4), "D1"),((8,1), "C2"),((8,4), "A2"),((2,2), "D3"),((4,2), "C3"),((6,2), "B3"),((8,2), "A3"),((2,3), "D4"),((4,3), "B4"),((6,3), "A4"),((8,3), "C4")], A.fromList $ replicate 4 $ -1)
 
 config :: Map Char (Int, Int)
 config = M.fromAscList
   [('A', (1, 2)), ('B', (10, 4)), ('C', (100, 6)), ('D', (1000, 8))]
 
-headEq bs p c = fmap head (bs M.!? p) == Just c
-
-homeX :: String -> Int
+homeX, cost :: String -> Int
 homeX = snd . fromJust . flip M.lookup config . head
+cost  = fst . fromJust . flip M.lookup config . head
 
-cost :: String -> Int
-cost = fst . fromJust . flip M.lookup config . head
+toIx :: Int -> Int
+toIx = subtract 1 . (`div` 2)
 
-moves :: (Int, Game) -> [(Int, Game)]
-moves m@(c, (ps, bs))
-  | not $ null topMoves = [head topMoves]
-  | otherwise           = btmMoves
+doors :: [Int]
+doors = [2, 4, 6, 8]
+
+doorS :: Set Int
+doorS = S.fromList doors
+
+moves :: Int -> (Int, Game) -> [(Int, Game)]
+moves depth m@(c, (ps, ts, bs, arr))
+  | not $ null t2h = [head t2h]
+  | not $ null h2h = [head h2h]
+  | length ts == 7 = []
+  | otherwise      = h2t
   where
-    assocs   = M.assocs ps
-    topMoves = concatMap (\(str, p@(x, y)) -> goHome c str x p) $ filter ((== 0) . snd . snd) assocs
-    btmMoves = concatMap (uncurry go) $ catMaybes [findCol x | x <- foo]
-    bar = catMaybes [findCol x | x <- foo]
-    -- filter ((< 2) . snd . snd) assocs
-    foo      = [2, 4, 6, 8]
-    findCol x = msum $ map (\y -> fmap (, (x, y)) $ bs M.!? (x, y)) [1, 2]
+    t2h       = concatMap (\(str, x) -> goHome c str x (x, 0)) (M.assocs ts)
+    h2h       = concatMap (\(str, p@(x, y)) ->
+                           goHome (c + y * cost str) str x p) hs
+    h2t       = concatMap (uncurry go) hs
+    hs        = catMaybes [findCol x | x <- doors, arr A.! toIx x < 0]
+    findCol x = msum $ map (\y -> fmap (, (x, y)) $ bs M.!? (x, y)) [1..depth]
     go str p@(x, y)
-      | x == homeX str && and [headEq bs (x, i) (head str) | i <- [(y + 1)..2]] = []
-      | not $ null homeRoute = homeRoute
-      | otherwise = goLeft (c + y * cost str) str x p ++ goRight (c + y * cost str) str x p
-      where
-        homeRoute = goHome (c + y * cost str) str x p
-    goHome c str x p
-      | M.member (hx, 1) bs = []
-      | any (\p -> p /= (x, 0) && p `M.member` bs) $ zip [min hx x..max hx x] (repeat 0) = []
-      | M.notMember (hx, 2) bs = [(c + cost str * (2 + abs (x - hx)), (M.insert str (hx, 2) ps, M.insert (hx, 2) str $ M.delete p bs))]
-      | head (bs M.! (hx, 2)) /= head str = []
-      | otherwise = [(c + cost str * (1 + abs (x - hx)), (M.insert str (hx, 1) ps, M.insert (hx, 1) str $ M.delete p bs))]
-      where
-        hx   = homeX str
-    goLeft c str x p
-      | x < 0 = []
+      = concat [goHori (c + y * cost str) str x p i | i <- [-1, 1]]
+    goHome c str x p@(x', y)
+      | hy < 0     = []
+      | cantGoHome = []
+      | y == depth = [(c', (ps', ts', bs', arr A.// [h', (toIx x', depth)]))]
+      | otherwise  = [(c', (ps', ts', bs', arr A.// [h']))]
+        where
+          h@(hx, hy) = (homeX str, arr A.! toIx hx)
+          cantGoHome = any ((`M.member` bs) . (, 0))
+                            [min hx (x + 1)..max hx (x - 1)]
+          c'         = c + cost str * (hy + abs (x - hx))
+          (ps', ts') = (M.insert str h ps, M.delete str ts)
+          (bs', h')  = (M.insert h str $ M.delete p bs, (toIx hx, hy - 1))
+    goHori c str x p@(x', y) dir
+      | dir * (x - 5) > 5  = []
       | M.member (x, 0) bs = []
-      | x `elem` [2, 4, 6, 8] = goLeft (c + cost str) str (x - 1) p
-      | otherwise = (c, (M.insert str (x, 0) ps, M.insert (x, 0) str $ M.delete p bs)) : goLeft (c + cost str) str (x - 1) p
-    goRight c str x p
-      | x > 10 = []
-      | M.member (x, 0) bs = []
-      | x `elem` [2, 4, 6, 8] = goRight (c + cost str) str (x + 1) p
-      | otherwise = (c, (M.insert str (x, 0) ps, M.insert (x, 0) str $ M.delete p bs)) : goRight (c + cost str) str (x + 1) p
+      | S.member x doorS   = next
+      | y == depth         = (c, (ps', ts', bs', arr A.// [h'])) : next
+      | otherwise          = (c, (ps', ts', bs', arr)) : next
+      where
+        (c', next) = (c + cost str, goHori c' str (x + dir) p dir)
+        (ps', ts') = (M.delete str ps, M.insert str x ts)
+        (bs', h')  = (M.insert (x, 0) str $ M.delete p bs, (toIx x', depth))
 
-isSorted :: Game -> Bool
-isSorted (_, bs) = headEq bs (2, 1) 'A' && headEq bs (2, 2) 'A'
-                && headEq bs (4, 1) 'B' && headEq bs (4, 2) 'B'
-                && headEq bs (6, 1) 'C' && headEq bs (6, 2) 'C'
-                && headEq bs (8, 1) 'D' && headEq bs (8, 2) 'D'
+isSorted :: Int -> Game -> Bool
+isSorted depth (_, _, bs, _) = and [headEq (2, i) 'A' | i <- [1..depth]]
+                            && and [headEq (4, i) 'B' | i <- [1..depth]]
+                            && and [headEq (6, i) 'C' | i <- [1..depth]]
+                            && and [headEq (8, i) 'D' | i <- [1..depth]]
+  where
+    headEq p c = fmap head (bs M.!? p) == Just c
+
+runGame :: Int -> Game -> Int
+runGame d game = go 0 (0, game)
+  where
+    go i m@(c, game)
+      | isSorted d game = c
+      | otherwise       = minimum $ maxBound : map (go (i + 1)) (moves d m)
 
 day23Part1 :: Game -> Int
-day23Part1 game = go 0 (0, game)
-  where
-    go i (c, game)
-      | isSorted game = c
-      | otherwise     = minimum $ maxBound : [go (i + 1) x | x <- moves (c, game)]
+day23Part1 = runGame 2
 
-day23Part2 = undefined
+day23Part2 :: Game -> Int
+day23Part2 = runGame 4
 
 main :: IO ()
 main = do
-  input <- fmap id . T.lines <$> readInput "day23"
-  -- print $ moves (0, test4)
+  input <- T.lines <$> readInput "day23"
   print $ day23Part1 day23
---   print $ day23Part1 input
---   print $ day23Part2 input
+  print $ day23Part2 day23'
