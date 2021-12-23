@@ -9,11 +9,12 @@ import           Data.Map (Map)
 import qualified Data.Map as M
 import qualified Data.Text as T
 import           Data.Tuple
+import qualified Gadgets.Map as M
 import           Utilities
 
 -- | Decode wirings into "Char" of digits.
 decode :: [String] -> Map String Char
-decode ds = M.fromList $ map swap $ M.toList $ 
+decode ds = M.swapkv $
             fst $ mapGets (M.empty, sort <$> ds) [get1748, get36, get9052]
   where
     -- Apply each "get" functions in order.
