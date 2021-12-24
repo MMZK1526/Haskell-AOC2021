@@ -7,6 +7,7 @@ module Day23 where
 import           Control.Monad
 import           Data.Array (Array)
 import qualified Data.Array as A
+import           Data.Bifunctor
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Maybe
@@ -20,20 +21,18 @@ type Game = -- Maps of amphipods in room/hallway & sorted depth for each room.
   (Map String (Int, Int), Map String Int, Map (Int, Int) String, Array Int Int)
 
 config :: Map Char (Int, Int)
-config = M.fromAscList
-  [('A', (1, 2)), ('B', (10, 4)), ('C', (100, 6)), ('D', (1000, 8))]
+config = M.fromAscList $ zip "ABCD" $ iterate (bimap (* 10) (+ 2)) (1, 2)
 
 roomX, cost :: [Char] -> Int
 roomX = snd . fromJust . flip M.lookup config . head
 cost  = fst . fromJust . flip M.lookup config . head
 
 isSorted :: Int -> Game -> Bool
-isSorted depth (_, _, bs, _) = and [headEq (2, i) 'A' | i <- [1..depth]]
-                            && and [headEq (4, i) 'B' | i <- [1..depth]]
-                            && and [headEq (6, i) 'C' | i <- [1..depth]]
-                            && and [headEq (8, i) 'D' | i <- [1..depth]]
-  where
-    headEq p c = fmap head (bs M.!? p) == Just c
+isSorted depth (_, _, bs, _) = let headEq p c = fmap head (bs M.!? p) == Just c
+                               in  and [headEq (2, i) 'A' | i <- [1..depth]]
+                                && and [headEq (4, i) 'B' | i <- [1..depth]]
+                                && and [headEq (6, i) 'C' | i <- [1..depth]]
+                                && and [headEq (8, i) 'D' | i <- [1..depth]]
 
 -- Basically brute-forcing through possible moves (with certain optimisations).
 runGame :: Int -> Game -> Int
@@ -97,17 +96,14 @@ main = do
   print $ day23Part2 $ toGame 4 $ addMd rawGame
   where
     parseRaw     = fst . foldr (uncurry ((. zip [-1..]) . flip . foldr . go))
-                               (M.empty, M.fromList $ zip "ABCD" $ repeat 1)
-                       . zip [1..]
+      (M.empty, M.fromList $ zip "ABCD" $ repeat 1) . zip [1..]
     go i (j, ch) raw@(rs, counts)
       | ch `elem` "# " = raw
       | otherwise      = ( M.insert (ch : show (counts M.! ch)) (j, i) rs
-                         , M.adjust (+ 1) ch counts )
-    addMd        = M.union (M.fromList [ ("D3", (2, 2)), ("C3", (4, 2))
-                                       , ("B3", (6, 2)), ("A3", (8, 2))
-                                       , ("D4", (2, 3)), ("B4", (4, 3))
-                                       , ("A4", (6, 3)), ("C4", (8, 3)) ])
-                 . M.map (\p@(x, y) -> if y == 1 then p else (x, 4))
+                         , M.adjust succ ch counts )
+    addMd        = let f = zip ["D3", "D4", "C3", "B4", "B3", "A4", "A3", "C4"] 
+                   in  M.union (M.fromList $ f (liftM2 (,) [2, 4..8] [2, 3]))
+                     . M.map (\p@(x, y) -> if y == 1 then p else (x, 4))
     toGame d raw = (raw, M.empty, raw', arr)
       where
         raw'     = M.swapkv raw

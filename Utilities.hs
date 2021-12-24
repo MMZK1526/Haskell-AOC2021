@@ -11,6 +11,7 @@ import qualified Data.Text.Read as T
 import           Gadgets.IO
 import qualified Numeric as N
 
+listToPair :: [b] -> (b, b)
 listToPair [a, b] = (a, b)
 
 readInput :: String -> IO Text
