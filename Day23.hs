@@ -67,7 +67,7 @@ runGame d = run 0 . (0 ,)
               d'         = d + fromMaybe 0 (arr A.!? toIx x') + 1
               r@(rx, ry) = (roomX str, arr A.! toIx rx)
               cantGoRoom = any ((`M.member` bs) . (, 0))
-                                [min rx (x + 1)..max rx (x - 1)]
+                               [min rx (x + 1)..max rx (x - 1)]
               c'         = c + cost str * (ry + abs (x - rx))
               (rs', hs') = (M.insert str r rs, M.delete str hs)
               (bs', r')  = (M.insert r str $ M.delete p bs, (toIx rx, ry - 1))
@@ -103,14 +103,14 @@ main = do
       | ch `elem` "# " = raw
       | otherwise      = ( M.insert (ch : show (counts M.! ch)) (j, i) rs
                          , M.adjust (+ 1) ch counts )
-    addMd        = M.union middle
+    addMd        = M.union (M.fromList [ ("D3", (2, 2)), ("C3", (4, 2))
+                                       , ("B3", (6, 2)), ("A3", (8, 2))
+                                       , ("D4", (2, 3)), ("B4", (4, 3))
+                                       , ("A4", (6, 3)), ("C4", (8, 3)) ])
                  . M.map (\p@(x, y) -> if y == 1 then p else (x, 4))
-    middle       = M.fromList [ ("D3", (2, 2)), ("C3", (4, 2)), ("B3", (6, 2))
-                              , ("A3", (8, 2)), ("D4", (2, 3)), ("B4", (4, 3))
-                              , ("A4", (6, 3)), ("C4", (8, 3)) ]
-    toGame d raw = (raw, M.empty, raw', arr d)
+    toGame d raw = (raw, M.empty, raw', arr)
       where
         raw'     = M.swapkv raw
-        run ch x = length $ takeWhile ((ch ==) . head . (raw' M.!)) 
-                                    $ (x, ) <$> [d, d - 1..1]
-        arr d    = A.fromList $ zipWith (((-) (- 1) .) . run) "ABCD" [2, 4..8]
+        run ch x = length $ takeWhile ((ch ==) . head . (raw' M.!))
+                                      (map (x, ) [d, d - 1..1])
+        arr      = A.fromList $ zipWith (((-) (- 1) .) . run) "ABCD" [2, 4..8]

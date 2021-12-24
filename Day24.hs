@@ -46,13 +46,12 @@ searchRoot isInc cArr = toInt . reverse . snd . head
   where
     bases        = (if isInc then id else reverse) [1..9]
     try b cache@(cI, cV) xs 
-      | not b = [(run cache [i], i : xs) | i <- bases]
+      | not b                  = [(runALU cArr cache [i], i : xs) | i <- bases]
       | index < 1 || index > 9 = []
-      | otherwise = [(run cache [index], index : xs)]
+      | otherwise              = [(runALU cArr cache [index], index : xs)]
       where
         index = cV M.! 'z' `mod` 26 + read (last ((cArr A.! cI) !! 5))
     toInt xs     = (read :: String -> Integer) $ concat $ show <$> xs
-    run cache xs = runALU cArr cache xs
 
 day24Part1 :: Array Int [[String]] -> [Bool] -> Integer
 day24Part1 = searchRoot False
