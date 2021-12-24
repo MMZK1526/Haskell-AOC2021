@@ -38,11 +38,11 @@ runALU cArr (cI, cV) = go cI cV (cArr A.! cI)
         i : is         = ins
         value str      = fromMaybe (read str) $ M.lookup (head str) state
 
-day24 :: Bool -> Array Int [[String]] -> [Bool] -> Integer
-day24 isInc cArr = toInt . reverse . snd . head 
-                 . filter ((== 0) . (M.! 'z') . snd . fst) 
-                 . foldr ((=<<) . uncurry . try) 
-                         [((0, M.fromList $ zip "wxyz" $ repeat 0), [])] 
+searchRoot :: Bool -> Array Int [[String]] -> [Bool] -> Integer
+searchRoot isInc cArr = toInt . reverse . snd . head 
+                      . filter ((== 0) . (M.! 'z') . snd . fst) 
+                      . foldr ((=<<) . uncurry . try) 
+                              [((0, M.fromList $ zip "wxyz" $ repeat 0), [])] 
   where
     bases        = (if isInc then id else reverse) [1..9]
     try b cache@(cI, cV) xs 
@@ -55,10 +55,10 @@ day24 isInc cArr = toInt . reverse . snd . head
     run cache xs = runALU cArr cache xs
 
 day24Part1 :: Array Int [[String]] -> [Bool] -> Integer
-day24Part1 = day24 False
+day24Part1 = searchRoot False
 
 day24Part2 :: Array Int [[String]] -> [Bool] -> Integer
-day24Part2 = day24 True
+day24Part2 = searchRoot True
 
 main :: IO ()
 main = do
