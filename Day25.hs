@@ -16,7 +16,7 @@ day25Part1 dims@(width, height) cs = go cs 1
     down  = first (\y -> (y + 1) `mod` height)
     right = second (\y -> (y + 1) `mod` width)
     go cs i
-      | not b' = i
+      | not b'    = i
       | otherwise = go cs'' $ i + 1
       where
         rsR        = M.keys $ M.filter (== '>') cs
