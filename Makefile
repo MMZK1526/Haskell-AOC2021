@@ -1,5 +1,5 @@
 all:
-	ghc -O3 AOC.hs
+	ghc -O3 AOC.hs -package parsec
 
 clean:
 	find . -name "*.o" -type f -delete
